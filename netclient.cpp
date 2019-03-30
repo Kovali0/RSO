@@ -40,9 +40,8 @@ main ()
 	}
 
 	/*  We can now read/write via sockfd.  */
-
-	scanf("%c",&ch);
-	std::cin>>ch;
+	printf("Podaj znak testowy:");
+	scanf("%d",&ch);
 	write (sockfd, &ch, 1);
 	read (sockfd, &ch, 1);
 	printf ("char from server = %c\n", ch);
