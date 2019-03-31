@@ -9,14 +9,14 @@
 #include <unistd.h>
 #include <iostream>
 
-int
-main ()
-{
+using namespace std;
+
+int main (){
 	int sockfd;
 	socklen_t len;
 	struct sockaddr_in address;
 	int result;
-	char ch = 'A';
+	char number;
 
 	/*  Create a socket for the client.  */
 
@@ -40,11 +40,14 @@ main ()
 	}
 
 	/*  We can now read/write via sockfd.  */
-	printf("Podaj znak testowy:");
-	scanf("%d",&ch);
-	write (sockfd, &ch, 1);
-	read (sockfd, &ch, 1);
-	printf ("char from server = %c\n", ch);
+	//printf("Podaj znak testowy:");
+	//scanf("%c",&ch);
+	cout<<"Podaj liczbe do spierwiastkowania: ";
+	cin>>number;
+	write (sockfd, &number, 1);
+	read (sockfd, &number, 1);
+	cout<<"Pierwiastek z podanej wartosci: ";
+	cout<<number;
 	close (sockfd);
 	exit (0);
 }

@@ -4,6 +4,10 @@
 #include <netinet/in.h>
 #include <signal.h>
 #include <unistd.h>
+#include <math.h>
+#include <iostream>
+
+using namespace std;
 
 int main(){
     
@@ -26,24 +30,23 @@ int main(){
 
 	while (1)
 	{
-		char ch;
+		double number = 1.0;
+		char message;
 
 		printf ("server waiting\n");
 
-		/*  Accept connection.  */
+		/*	Accepting connection	*/
 
 		client_len = sizeof (client_address);
-		client_sockfd = accept (server_sockfd,
-				(struct sockaddr *) &client_address,
-				&client_len);
+		client_sockfd = accept (server_sockfd,(struct sockaddr *) &client_address,&client_len);
 
-		/*  We can now read/write to the client on client_sockfd.
-			The five second delay is just for this demonstration.  */
-
-		read (client_sockfd, &ch, 1);
-		sleep (5);
-		ch++;
-		write (client_sockfd, &ch, 1);
+		read (client_sockfd, &message, 1);
+		number = atof(&message);
+		cout << number << endl;
+		number = sqrt(number);
+		message = (char)number;
+		cout << number << endl;
+		write (client_sockfd, &message, 1);
 		close (client_sockfd);
 	}
 }
