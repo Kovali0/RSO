@@ -8,6 +8,9 @@
 #include <arpa/inet.h>
 #include <unistd.h>
 #include <iostream>
+#include <ctime>  
+#include <string.h>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -15,8 +18,10 @@ int main (){
 	int sockfd;
 	socklen_t len;
 	struct sockaddr_in address;
-	int result;
-	char number;
+	int result, war, wyb, ln;
+	double number;
+	char* dt = new char[25];
+	//string dt;
 
 	/*  Create a socket for the client.  */
 
@@ -39,15 +44,52 @@ int main (){
 		exit (1);
 	}
 
-	/*  We can now read/write via sockfd.  */
-	//printf("Podaj znak testowy:");
-	//scanf("%c",&ch);
-	cout<<"Podaj liczbe do spierwiastkowania: ";
-	cin>>number;
-	write (sockfd, &number, 1);
-	read (sockfd, &number, 1);
-	cout<<"Pierwiastek z podanej wartosci: ";
-	cout<<number;
+	do{
+		cout<<"Wybierz opcje\n1-Pierwiastek\n2-Data i godzina"<<endl;
+		cin>>wyb;
+		switch(wyb){
+			case 1:
+				write (sockfd, &wyb, sizeof(int));
+				cout<<"Podaj liczbe do spierwiastkowania: ";
+				cin>>number;
+				write (sockfd, &number, sizeof(double));
+				read (sockfd, &number, sizeof(double));
+				cout<<"Pierwiastek z podanej wartosci: ";
+				//printf("%f",number);
+				cout<<number<<endl;
+				cout<<"Chcesz zamknac program? (1-Tak, 2-Nie) ";
+				cin>>wyb;
+				write (sockfd, &wyb, sizeof(int));
+				if(wyb==1){war=1;}
+				else{war=0;}
+			break;
+			case 2:
+				write (sockfd, &wyb, sizeof(int));
+				read (sockfd, &ln, sizeof(int));
+				cout << ln << endl;
+				for(int i = 0; i<ln-1; i++){
+					read (sockfd, &dt[i], 1);
+					cout<<dt[i];
+				}
+				//read (sockfd, &dt, sizeof(string));
+				cout<<"\n"<<dt<<endl;
+				cout<<"Chcesz zamknac program? (1-Tak, 2-Nie) ";
+				cin>>wyb;
+				write (sockfd, &wyb, sizeof(int));
+				if(wyb==1){war=1;}
+				else{war=0;}
+			break;
+			case 3:
+				war=1;
+			break;
+			default:
+				cout<<"Wprowadzono niepoprawna opcje. Sprobuj jeszcze raz."<<endl;
+				war=0;
+			break;
+			if(war==1){cout<<"Program zostanie zamkniety.";}
+
+		}
+	}while(war==0);
 	close (sockfd);
 	exit (0);
 }

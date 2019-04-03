@@ -6,6 +6,9 @@
 #include <unistd.h>
 #include <math.h>
 #include <iostream>
+#include <ctime>  
+#include <string.h>
+#include <stdlib.h>
 
 using namespace std;
 
@@ -30,23 +33,51 @@ int main(){
 
 	while (1)
 	{
-		double number = 1.0;
-		char message;
+		double number;
+		int choice, war = 0, w;
 
-		printf ("server waiting\n");
+		printf ("server waiting for next client\n");
 
 		/*	Accepting connection	*/
 
 		client_len = sizeof (client_address);
 		client_sockfd = accept (server_sockfd,(struct sockaddr *) &client_address,&client_len);
-
-		read (client_sockfd, &message, 1);
-		number = atof(&message);
-		cout << number << endl;
-		number = sqrt(number);
-		message = (char)number;
-		cout << number << endl;
-		write (client_sockfd, &message, 1);
+		
+		//
+		do{
+			read (client_sockfd, &choice, sizeof(int));
+			if(choice==1){
+				read (client_sockfd, &number, sizeof(double));
+				//number = atof(&message);
+				cout << number << endl;
+				number = sqrt(number);
+				//message = (char)number;
+				cout << number << endl;
+				write (client_sockfd, &number, sizeof(double));
+				read (client_sockfd, &w, sizeof(int));
+				if(w==1){war=1;}
+				else{war=0;}
+			}else{
+				if(choice==2){
+					time_t now = time(0);
+					char* dt = ctime(&now);
+					//string dt = ctime(&now);
+					cout << dt << endl;
+					int ln = strlen(dt);
+					cout << ln << endl;
+					//int ln = dt.length();
+					write (client_sockfd, &ln, sizeof(int));
+					for(int i = 0; i<ln-1; i++){
+						cout<<dt[i];
+						write (client_sockfd, &dt[i], 1);
+					}
+					//write (client_sockfd, &dt, sizeof(string));
+					read (client_sockfd, &w, sizeof(int));
+					if(w==1){war=1;}
+					else{war=0;}
+				}
+			}
+		}while(war==0);
 		close (client_sockfd);
 	}
 }

@@ -1,7 +1,7 @@
 CFLAGS=-ggdb -Wall -pedantic -D_REENTRANT
 
 %: %.c
-	gcc $(CFLAGS) $< -o $@ -lpthread
+	gcc $(CFLAGS) $< -o $@ -lpthread -lm
 
 EXECS = server netclient
 
