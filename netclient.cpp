@@ -11,6 +11,7 @@
 #include <ctime>  
 #include <string.h>
 #include <stdlib.h>
+#include "Message.hpp"
 
 using namespace std;
 
@@ -44,38 +45,43 @@ int main (){
 		exit (1);
 	}
 
+	cout<<"Wielkosc wiadomosci: "<<sizeof(Message)<<endl;
 	do{
-		cout<<"Wybierz opcje\n1-Pierwiastek\n2-Data i godzina"<<endl;
+		Message msg;
+		cout<<"Wybierz opcje\n1-Pierwiastek\n2-Data i godzina\n3-Zamknij program"<<endl;
 		cin>>wyb;
+		msg.setChoice(wyb);
 		switch(wyb){
 			case 1:
-				write (sockfd, &wyb, sizeof(int));
 				cout<<"Podaj liczbe do spierwiastkowania: ";
 				cin>>number;
-				write (sockfd, &number, sizeof(double));
-				read (sockfd, &number, sizeof(double));
+				msg.setValue(number);
+				write (sockfd, &msg, sizeof(Message));
+				read (sockfd, &msg, sizeof(Message));
 				cout<<"Pierwiastek z podanej wartosci: ";
 				//printf("%f",number);
-				cout<<number<<endl;
+				cout<<msg.getValues()<<endl;
 				cout<<"Chcesz zamknac program? (1-Tak, 2-Nie) ";
 				cin>>wyb;
-				write (sockfd, &wyb, sizeof(int));
+				msg.setChoice(wyb);
+				write (sockfd, &msg, sizeof(Message));
 				if(wyb==1){war=1;}
 				else{war=0;}
 			break;
 			case 2:
-				write (sockfd, &wyb, sizeof(int));
-				read (sockfd, &ln, sizeof(int));
-				cout << ln << endl;
-				for(int i = 0; i<ln-1; i++){
-					read (sockfd, &dt[i], 1);
-					cout<<dt[i];
-				}
-				//read (sockfd, &dt, sizeof(string));
-				cout<<"\n"<<dt<<endl;
+				write (sockfd, &msg, sizeof(Message));
+				read (sockfd, &msg, sizeof(Message));
+				//ln = strlen(msg.getDT());
+				// for(int i = 0; i<ln-1; i++){
+				// 	read (sockfd, &dt[i], 1);
+				// 	cout<<dt[i];
+				// }
+				//read (sockfd, &dt, sizeof(Message));
+				cout<<"Data:"<<msg.getDT()<<endl;
 				cout<<"Chcesz zamknac program? (1-Tak, 2-Nie) ";
 				cin>>wyb;
-				write (sockfd, &wyb, sizeof(int));
+				msg.setChoice(wyb);
+				write (sockfd, &msg, sizeof(Message));
 				if(wyb==1){war=1;}
 				else{war=0;}
 			break;

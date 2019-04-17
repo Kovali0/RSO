@@ -9,6 +9,7 @@
 #include <ctime>  
 #include <string.h>
 #include <stdlib.h>
+#include "Message.hpp"
 
 using namespace std;
 
@@ -35,6 +36,7 @@ int main(){
 	{
 		double number;
 		int choice, war = 0, w;
+		Message msg =  Message();
 
 		printf ("server waiting for next client\n");
 
@@ -45,16 +47,18 @@ int main(){
 		
 		//
 		do{
-			read (client_sockfd, &choice, sizeof(int));
+			read (client_sockfd, &msg, sizeof(Message));
+			choice=msg.getChoice();
 			if(choice==1){
-				read (client_sockfd, &number, sizeof(double));
-				//number = atof(&message);
+				number = msg.getValues();
 				cout << number << endl;
 				number = sqrt(number);
 				//message = (char)number;
 				cout << number << endl;
-				write (client_sockfd, &number, sizeof(double));
-				read (client_sockfd, &w, sizeof(int));
+				msg.setValue(number);
+				write (client_sockfd, &msg, sizeof(Message));
+				read (client_sockfd, &msg, sizeof(Message));
+				choice=msg.getChoice();
 				if(w==1){war=1;}
 				else{war=0;}
 			}else{
@@ -62,17 +66,16 @@ int main(){
 					time_t now = time(0);
 					char* dt = ctime(&now);
 					//string dt = ctime(&now);
-					cout << dt << endl;
-					int ln = strlen(dt);
-					cout << ln << endl;
-					//int ln = dt.length();
-					write (client_sockfd, &ln, sizeof(int));
-					for(int i = 0; i<ln-1; i++){
-						cout<<dt[i];
-						write (client_sockfd, &dt[i], 1);
-					}
+					msg.setDT(dt);
+					cout<<"Data: "<<msg.getDT();
+					write (client_sockfd, &msg, sizeof(Message));
+					// for(int i = 0; i<ln-1; i++){
+					// 	cout<<dt[i];
+					// 	write (client_sockfd, &dt[i], 1);
+					// }
 					//write (client_sockfd, &dt, sizeof(string));
-					read (client_sockfd, &w, sizeof(int));
+					read (client_sockfd, &msg, sizeof(Message));
+					choice=msg.getChoice();
 					if(w==1){war=1;}
 					else{war=0;}
 				}
