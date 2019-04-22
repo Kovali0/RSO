@@ -10,6 +10,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "Message.hpp"
+#include "endianlib.h"
 
 using namespace std;
 
@@ -68,6 +69,7 @@ int main(){
 					//string dt = ctime(&now);
 					msg.setDT(dt);
 					cout<<"Data: "<<msg.getDT();
+					msg.setDT(swap_endian(msg.getDT()));
 					write (client_sockfd, &msg, sizeof(Message));
 					// for(int i = 0; i<ln-1; i++){
 					// 	cout<<dt[i];

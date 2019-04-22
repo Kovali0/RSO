@@ -12,6 +12,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include "Message.hpp"
+#include "endianlib.h"
 
 using namespace std;
 
