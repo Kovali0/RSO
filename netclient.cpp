@@ -64,6 +64,7 @@ int main (){
 				read (sockfd, &msg, sizeof(Message));
 				cout<<"Pierwiastek z podanej wartosci: ";
 				//printf("%f",number);
+				msg.setValue(swap_endian(msg.getValues()));
 				cout<<msg.getValues()<<endl;
 				cout<<"Chcesz zamknac program? (1-Tak, 2-Nie) ";
 				cin>>wyb;
