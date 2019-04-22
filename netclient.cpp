@@ -42,7 +42,8 @@ int main (){
 
 	if (result == -1)
 	{
-		perror ("oops: netclient");
+		cout << strerror(errno) << endl;
+		// perror ("oops: netclient");
 		exit (1);
 	}
 
@@ -58,7 +59,7 @@ int main (){
 				cin>>number;
 				cout<<swap_endian(number);
 				msg.setValue(swap_endian(number));
-				cout << "test";
+				cout << "test" << endl;
 				write (sockfd, &msg, sizeof(Message));
 				read (sockfd, &msg, sizeof(Message));
 				cout<<"Pierwiastek z podanej wartosci: ";
