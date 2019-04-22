@@ -49,16 +49,21 @@ int main(){
 		//
 		do{
 			read (client_sockfd, &msg, sizeof(Message));
+			msg.setChoice(swap_endian(msg.getChoice()));
 			choice=msg.getChoice();
 			if(choice==1){
+				cout << msg.getValues();
+				msg.setValue(swap_endian(msg.getValues()));
 				number = msg.getValues();
 				cout << number << endl;
 				number = sqrt(number);
 				//message = (char)number;
 				cout << number << endl;
 				msg.setValue(number);
+				msg.setValue(swap_endian(msg.getValues()));
 				write (client_sockfd, &msg, sizeof(Message));
 				read (client_sockfd, &msg, sizeof(Message));
+				msg.setChoice(swap_endian(msg.getChoice()));
 				choice=msg.getChoice();
 				if(w==1){war=1;}
 				else{war=0;}
@@ -69,7 +74,7 @@ int main(){
 					//string dt = ctime(&now);
 					msg.setDT(dt);
 					cout<<"Data: "<<msg.getDT();
-					msg.setDT(swap_endian(msg.getDT()));
+					//msg.setDT(swap_endian(msg.getDT()));
 					write (client_sockfd, &msg, sizeof(Message));
 					// for(int i = 0; i<ln-1; i++){
 					// 	cout<<dt[i];
@@ -77,6 +82,7 @@ int main(){
 					// }
 					//write (client_sockfd, &dt, sizeof(string));
 					read (client_sockfd, &msg, sizeof(Message));
+					msg.setChoice(swap_endian(msg.getChoice()));
 					choice=msg.getChoice();
 					if(w==1){war=1;}
 					else{war=0;}
