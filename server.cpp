@@ -14,6 +14,14 @@
 
 using namespace std;
 
+string getErrno() {
+	return strerror(errno);
+}
+
+void printErrno() {
+	cout << getErrno() << endl;
+}
+
 int main(){
     
     int server_sockfd, client_sockfd;
@@ -22,16 +30,31 @@ int main(){
 	struct sockaddr_in client_address;
 
 	server_sockfd = socket (AF_INET, SOCK_STREAM, 0);
+	if(server_sockfd == -1) {
+		printErrno();
+		return -1;
+	}
+
+	int optval = 1;
+	if(setsockopt(server_sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) == -1) {
+		printErrno();
+	}
 
 	server_address.sin_family = AF_INET;
 	server_address.sin_addr.s_addr = htonl (INADDR_ANY);
 	server_address.sin_port = htons (9734);
 	server_len = sizeof (server_address);
-	bind (server_sockfd, (struct sockaddr *) &server_address, server_len);
+	if(bind (server_sockfd, (struct sockaddr *) &server_address, server_len) == -1) {
+		printErrno();
+		return -2;
+	}
 
 	/*  Create a connection queue and wait for clients.  */
 
-	listen (server_sockfd, 5);
+	if(listen (server_sockfd, 5) == -1) {
+		printErrno();
+		return -3;
+	}
 
 	while (1)
 	{
@@ -49,16 +72,23 @@ int main(){
 		//
 		do{
 			read (client_sockfd, &msg, sizeof(Message));
+			// cout << "choice_B = " << msg.getChoice() << endl;
+			msg.setChoice(swap_endian(msg.getChoice()));
 			choice=msg.getChoice();
+			// cout << "choice_L = " << choice << endl;
 			if(choice==1){
+				cout << msg.getValues();
+				msg.setValue(swap_endian(msg.getValues()));
 				number = msg.getValues();
 				cout << number << endl;
 				number = sqrt(number);
 				//message = (char)number;
 				cout << number << endl;
 				msg.setValue(number);
+				msg.setValue(swap_endian(msg.getValues()));
 				write (client_sockfd, &msg, sizeof(Message));
 				read (client_sockfd, &msg, sizeof(Message));
+				msg.setChoice(swap_endian(msg.getChoice()));
 				choice=msg.getChoice();
 				if(w==1){war=1;}
 				else{war=0;}
@@ -69,7 +99,7 @@ int main(){
 					//string dt = ctime(&now);
 					msg.setDT(dt);
 					cout<<"Data: "<<msg.getDT();
-					msg.setDT(swap_endian(msg.getDT()));
+					//msg.setDT(swap_endian(msg.getDT()));
 					write (client_sockfd, &msg, sizeof(Message));
 					// for(int i = 0; i<ln-1; i++){
 					// 	cout<<dt[i];
@@ -77,6 +107,7 @@ int main(){
 					// }
 					//write (client_sockfd, &dt, sizeof(string));
 					read (client_sockfd, &msg, sizeof(Message));
+					msg.setChoice(swap_endian(msg.getChoice()));
 					choice=msg.getChoice();
 					if(w==1){war=1;}
 					else{war=0;}

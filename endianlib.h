@@ -13,8 +13,8 @@ T swap_endian(const T& value){
         T result;
         char* old_v = (char*) &value;
         char* new_v = (char*) &result;
-        for(size_t i=0; i<sizeof(value)-1; i++){
-            new_v[i] = old_v[sizeof(value)-i];
+        for(size_t i=0; i<sizeof(value); i++){
+            new_v[i] = old_v[sizeof(value) - i - 1];
         }
         return result;
     }
